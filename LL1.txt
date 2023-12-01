@@ -1,0 +1,290 @@
+83. Remove Duplicates from Sorted List
+
+Given the head of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+
+class Solution {
+  public ListNode deleteDuplicates(ListNode head) {
+    for (var p = head; p != null; p = p.next)
+      while (p.next != null && p.next.val == p.val)
+        p.next = p.next.next;
+    
+    return head;
+  }
+}
+
+2095. Delete the Middle Node of a Linked List
+
+You are given the head of a linked list. Delete the middle node, and return the head of the modified linked list.
+
+class Solution {
+    public ListNode deleteMiddle(ListNode head) {
+        if(head.next==null){
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode temp = head;
+
+        while(fast!=null&&fast.next!=null){
+            temp = slow;
+            slow =slow.next;
+            fast = fast.next.next;
+        }
+        temp.next=slow.next;
+        return head;
+    }
+}
+
+25. Reverse Nodes in k-Group
+
+Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+
+You may not alter the values in the list's nodes, only nodes themselves may be changed.
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode temp = head;
+        int count = 0;
+        while (temp != null && count < k) {
+            temp = temp.next;
+            count++;
+        }
+        if(count <k) return head;
+        else{
+        ListNode cur=head;
+        ListNode prev=null;
+        ListNode nextptr=null;
+        count=0;
+        while(count < k)
+        {
+            nextptr=cur.next;
+            cur.next=prev;
+            prev=cur;
+            cur=nextptr;
+            count++;
+        }
+            head.next=reverseKGroup(nextptr,k);
+        return prev;
+        }
+    }
+}
+
+92. Reverse Linked List II
+
+Given the head of a singly linked list and two integers left and right where left <= right, reverse the nodes of the list from position left to position right, and return the reversed list.
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        // check if there is only one or zero nodes in linked list
+        if(head == null || head.next == null) return head;
+
+        // given range has zero nodes then return from here
+        if (left == right) return head;
+        
+        /// Points at the previous node of starting node of range
+        // And if range starts from head then point at head
+        ListNode start = head;
+
+        // Create three pointers for reversing the links between nodes
+        ListNode prev = head, curr=prev.next, next;
+
+        // execute a for loop to go where the range starts
+        for(int i=0; i < left-1; i++) {
+            start = prev;
+            prev = prev.next;
+            curr = prev.next;
+        }
+
+        // Now reverse the links of selected range
+        for(int i=0; i < right-left; i++) {
+            next = curr.next;
+            curr.next = prev;
+
+            prev = curr;
+            curr = next;
+        }
+
+        // At last if range starts from the head node then change the link to last node of range
+        if(left == 1) {
+            head.next = curr;
+            head = prev;
+            
+            return head;
+        }
+
+        // change the links of starting node to the last node of range
+        start.next.next = curr;
+        start.next = prev;
+
+        return head;
+    }
+}
+
+206. Reverse Linked List
+
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;  
+        ListNode current = head;
+    
+        
+        while(current != null) { 
+            ListNode next = current.next; 
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+       return prev; 
+    }
+}
+
+707. Design Linked List
+
+Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+A node in a singly linked list should have two attributes: val and next. val is the value of the current node, and next is a pointer/reference to the next node.
+If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.
+
+class MyLinkedList {
+    // declare size varibale to hold current size of linkedlist
+    int size;
+    // declare head variable that will hold pointer to head of linkedlist
+    ListNode head;
+
+    public MyLinkedList() {
+        // initiate size with 0
+        this.size = 0;
+        // create head node with 0 as value
+        this.head = new ListNode(0);
+    }
+    
+    public int get(int index) {
+        // check that index are valid 
+        if (index < 0 || index >= size) return -1;
+        // declare sentinel node to iterate over linked list
+        ListNode sentinel = this.head;
+        // iterate over linked list and move sentinel node until we found node at specified index
+        for(int i = 0; i < index + 1; ++i) sentinel = sentinel.next;
+        // return found node value
+        return sentinel.val;
+    }
+    
+    public void addAtHead(int val) {
+        // to add to head we could reuse our inner method with 0 as index
+        addAtIndex(0, val);
+    }
+    
+    public void addAtTail(int val) {
+        // same for add at tail, but size as index
+        addAtIndex(this.size, val);
+    }
+    
+    public void addAtIndex(int index, int val) {
+        // check that index not more than current linkedlist size
+        if(index > this.size) return;
+        // check that index not less than zero if less set it to zero
+        if(index < 0) index = 0;
+        // precrement size
+        ++size;
+        // declare sentinel node and point to head
+        ListNode sentinel = this.head;
+        // iterate over linkedlist until node at needed index found
+        for(int i = 0; i < index; ++i) sentinel = sentinel.next;
+        // create node to add
+        ListNode node = new ListNode(val);
+        // set node next pointer to point at sentinel.next
+        node.next = sentinel.next;
+        // point sentinel.next at new node
+        sentinel.next = node;
+    }
+    
+    public void deleteAtIndex(int index) {
+        // check if index is valid
+        if(index < 0 || index >= this.size) return;
+        // decrement size
+        size--;
+        // declare sentinel node and point to head
+        ListNode sentinel = this.head;
+        // iterate over linkedlist until node at specified index found
+        for(int i = 0; i < index; ++i)  sentinel = sentinel.next;
+        // delete node by by rearanging pointers
+        sentinel.next = sentinel.next.next;
+    }
+}
+
+
+19. Remove Nth Node From End of List
+
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        // if LL has only one element then return null
+        if(head == null || head.next == null){
+            return null;
+        }
+
+        // find the size of the LL
+        int size = 0;
+        ListNode curr = head;
+
+        while(curr != null){
+            size++;
+            curr = curr.next;
+        }
+
+        // now nth node from end is size-n+1 so its prev node is at size-n
+        int prevNodeIndex = size -n;
+        int i = 1;
+        ListNode prev = head;
+
+        // if we are deleting the nth node from end and in this case that node is our head so we need to return its next
+        if(n == size){
+            return head.next;
+        }
+        while(i < prevNodeIndex){
+            prev = prev.next;
+            i++;
+        }
+
+        prev.next = prev.next.next;
+        return head;
+
+
+        
+    }
+}
+ 
